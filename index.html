@@ -12,47 +12,128 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="pin-generator half-width">
-                    <input class="form-control" type="text">
-                    <button class="generate-btn">Generate Pin</button>
+                    <input id="verification-code" class="form-control" type="text" value="Hit the button to receive the verification code">
+                    <button id="generator" class="generate-btn">Generate Pin</button>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-section half-width">
-                    <input class="form-control" type="text">
+                    <input id="match-code" class="form-control" type="text" value="">
                     <div class="numbers">
                         <div class="calc-body">
                             <div class="calc-button-row">
-                              <div class="button">7</div>
-                              <div class="button">8</div>
-                              <div class="button">9</div>
+                              <div id="seven" onclick="numbers('seven')" class="button">7</div>
+                              <div id="eight" onclick="numbers('eight')" class="button">8</div>
+                              <div id="nine" onclick="numbers('nine')" class="button">9</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">4</div>
-                              <div class="button">5</div>
-                              <div class="button">6</div>
+                              <div id="four" onclick="numbers('four')" class="button">4</div>
+                              <div id="five" onclick="numbers('five')" class="button">5</div>
+                              <div id="six" onclick="numbers('six')" class="button">6</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">1</div>
-                              <div class="button">2</div>
-                              <div class="button">3</div>
+                              <div id="one" onclick="numbers('one')" class="button">1</div>
+                              <div id="two" onclick="numbers('two')" class="button">2</div>
+                              <div id="three" onclick="numbers('three')" class="button">3</div>
                             </div>
                             <div class="calc-button-row">
-                                <div class="button"><</div>
-                                <div class="button">0</div>
-                                <div class="button">C</div>
+                                <div id="back-space" class="button"><</div>
+                                <div id="zero" onclick="numbers('zero')" class="button">0</div>
+                                <div id="clear" class="button">C</div>
                             </div>
                             <div>
-                                <button type="submit" class="submit-btn">Submit</button>
-                                <p class="action-left">3 try left</p>
+                                <button id="submit-btn" type="submit" class="submit-btn">Submit</button>
+                                <p class="action-left"><span id="try">3</span> try left</p>
                             </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="notify-section">
-            <p class="notify">❌ Pin Didn't Match, Please try again</p>
-            <p class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            <p id="error" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="success" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+
+            <div id="door" class="py-3 text-center">
+                <img width="200" src="image/door-opening.gif" alt="not found">
+            </div>
         </div>
     </div>
+
+
+    <script>
+        // jshint esnext:true
+        let generator  = document.getElementById('generator')
+        generator.addEventListener('click', function(){
+            let code = Math.floor(Math.random() * (10000 - 1000) + 1)
+            let verificationCode = document.getElementById('verification-code')
+            verificationCode.value = code
+
+            document.getElementById('submit-btn').removeAttribute('disabled')
+
+            let attempt = document.getElementById('try')
+            attempt.innerText = 3
+
+            
+        })
+
+        let clear = document.getElementById('clear')
+        clear.addEventListener('click', function(){
+            let matchCode = document.getElementById('match-code')
+            matchCode.value = ''
+        })
+
+        let backSpace = document.getElementById('back-space')
+        backSpace.addEventListener('click', function(){
+            let matchCode = document.getElementById('match-code')
+            let correction = parseInt(matchCode.value.slice(0, -1))
+            matchCode.value = parseInt(correction)
+            if(isNaN(matchCode.value))
+            {
+                matchCode.value = ''
+            }
+        })
+    
+        let submitBtn = document.getElementById('submit-btn')
+        submitBtn.addEventListener('click', function(){
+            let verificationCode = document.getElementById('verification-code')
+            let matchCode = document.getElementById('match-code')
+ 
+            if(matchCode.value == verificationCode.value)
+            {
+                document.getElementById('success').style.display = 'block'
+                document.getElementById('error').style.display = 'none'
+                document.getElementById('door').style.display = 'block'
+                matchCode.value = 'Matched'
+                verificationCode.value = 'Hit the button to receive the verification code'
+            }
+            else
+            {
+                document.getElementById('success').style.display = 'none'
+                document.getElementById('error').style.display = 'block'
+                document.getElementById('door').style.display = 'none'
+                matchCode.value = ''
+                let attempt = document.getElementById('try')
+                attempt.innerText = parseInt(attempt.innerText) - 1
+
+                if (attempt.innerText == 0)
+                {
+                    document.getElementById('submit-btn').setAttribute('disabled', 'true')
+                    attempt.innerText = 'Please Generate a new code and try again'
+                }
+
+            }
+             
+        })
+
+
+
+         // Grab the input from the number table and display.
+        function numbers(unit)
+        {
+            let matchCode = document.getElementById('match-code')
+            let number = document.getElementById(unit)
+            matchCode.value += number.innerText
+        }
+    </script>
 </body>
 </html>

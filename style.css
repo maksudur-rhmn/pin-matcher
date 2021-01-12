@@ -104,3 +104,15 @@ color: #E0B612;
     color: #FF3C5F;
     margin-top: 10px;
 }
+
+#door {
+    display: none;
+}
+
+#error {
+    display: none;
+}
+
+#success {
+    display: none;
+}
